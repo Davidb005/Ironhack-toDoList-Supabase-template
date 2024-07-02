@@ -16,12 +16,13 @@ export const useTaskStore = defineStore("taskStore", () => {
     console.log("tasks: ", tasks.value);
   }
 
-const addTask = async () => {
+const addTask = async (title, user_id) => {
   const { data, error } = await supabase
-    .from('tasks')
-    .insert({ name: newTaskName.value })
-    .select();
-  
+      .from('tasks')
+      .insert([
+        { title: title, user_id: user_id },
+      ]).select()
+
   if (error) {
     console.error('Error adding task:', error);
   } else {
@@ -30,22 +31,32 @@ const addTask = async () => {
   }
 };
 
-const deleteTask = async () => {
+const deleteTask = async (task) => {
   const { error } = await supabase
     .from('tasks')
     .delete()
-    .eq('id', 1);
+    .eq('id', task.id);
+
+    fetchTasks();
 }
 
-const editTask = async() => {
-  const { data, error } = await supabase
+
+const editTask = async (task) => {
+  const { error } = await supabase
     .from('tasks')
-    .update({ name: newTaskName.value })
-    .eq('id', 1);
-  
-  if (error) {
-    console.error('Error editing task:', error);
-  } 
+    .update({ title: task.title })
+    .eq('id', task.id);
+
+    fetchTaskst();
 }
-  return { tasks, fetchTasks, addTask, deleteTask, editTask}
+
+const completeTask = async (task) => {
+  task.is_complete = !task.is_complete;
+  await supabase
+    .from('tasks')
+    .update({ is_complete: task.is_complete })
+    .eq('id', task.id);
+     fetchTasks();
+};
+  return {  tasks, fetchTasks, addTask, deleteTask, editTask, completeTask}
 })

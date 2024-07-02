@@ -16,6 +16,9 @@ const password = ref("");
     <h1 class="title">Your ToDo List</h1>
   </div>
   <h2 v-if="userStore.user">Welcome {{ userStore.user.user.email }}!</h2>
+  <RouterLink to="/list">
+     <button class="link-button2" v-if="userStore.user">Get started</button>
+  </RouterLink> 
   <fieldset class="login-container">
     <input class="input" placeholder="Write your email" v-model="email" />
     <input
@@ -24,7 +27,6 @@ const password = ref("");
       placeholder="Write your password"
       v-model="password"
     />
-
     <button class="button" @click="userStore.signInUser(email, password)">
       Log In
     </button>
@@ -52,8 +54,10 @@ const password = ref("");
   display: flex;
   justify-content: space-evenly;
   height: 50vh;
-  background-color: mediumturquoise;
+  background-color: rgb(244, 162, 162);
   margin-bottom: 100px;
+  margin-left: 5%;
+  margin-right: 5%;
   .input {
     width: 33vw;
     height: 20px;
@@ -88,5 +92,16 @@ const password = ref("");
     margin-left: 50%;
     transform: translateX(-50%);
   }
+}
+
+.link-button2{
+  width: 50%;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 4%;
+  background-color: lightblue;
+  text-transform: uppercase;
+  font-weight: bold;
+
 }
 </style>

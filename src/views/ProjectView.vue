@@ -4,29 +4,59 @@ import { useTaskStore } from "../stores/task";
 import { ref } from "vue";
 const userStore = useUserStore();
 const taskStore = useTaskStore();
+
+const newTaskInput = ref();
+const deletedTask = ref();  
+async function addTask(){
+  if(!newTaskInput.value) {
+    alert('please introduce a task');
+  }  else {
+    taskStore.addTask(newTaskInput.value, userStore.user.user.id);
+  }
+}
+
+async function deleteTask(task) {
+  taskStore.deleteTask(task)
+}
+
+async function editTask(task){
+  let newTitle = prompt('What are you up to?', task.title);
+  if(!newTitle){
+    alert('Please, introduce the title of your new task');
+  } else{
+    task.title = newTitle;
+    taskStore.editTask(task);
+  }
+}
+async function completeTask(task){
+  taskStore.completeTask(task)
+}
 </script>
 
 <template>
   <div class="title-container">
-    <h1 class="title">Your ToDo List</h1>
+    <RouterLink class="router-link" to="/">
+     <h1 class="title">Your ToDo List</h1>
+    </RouterLink>
   </div>
   <fieldset class="task-input-container">
-    <input class="task-input" type="text" placeholder="Enter a Task" />
-    <button class="task-button" @click="taskStore.addTask">Add Task</button>
+    <input class="task-input" type="text" placeholder="Enter a Task" v-model="newTaskInput" />
+    <button class="task-button" @click="addTask()">Add Task</button>
   </fieldset>
   <div class="fetch-button-container">
     <button class="fetch-button" @click="taskStore.fetchTasks()">
-      SHOW ME MY NEXT GOAL!
+      SHOW ME MY TASKS
     </button>
   </div>
   <ul class="task-list">
     <li class="list-items" v-for="task in taskStore.tasks">
-      <h4 class="task-name">
+      <input type="checkbox" class="complete-button" @click="completeTask(task)">
+      <h4 :class="{'completed-task': task.is_complete, 'task-name': !task.is_complete}">
         {{ task.title }}
       </h4>
       <div class="button-container">
-        <button class="task-button1" @="taskStore.editTask">Edit</button>
-        <button class="task-button2" @="taskStore.deleteTask">Delete</button>
+          <button class="task-button1" v-if="!task.is_complete" @click="editTask(task)">Edit</button>
+        <button class="task-button2" @click="deleteTask(task)">Delete</button>
       </div>
     </li>
   </ul>
@@ -34,9 +64,9 @@ const taskStore = useTaskStore();
 
 <style>
 .title-container {
-  background-color: darkolivegreen;
   margin-bottom: 30px;
-
+  border-bottom: solid  10px black;
+  padding-bottom: 10px;
   .title {
     color: rgb(255, 153, 0);
     text-align: center;
@@ -62,15 +92,15 @@ const taskStore = useTaskStore();
 }
 
 .fetch-button {
-  width: 14vw;
-  height: 21vh;
-  border-radius: 50%;
+  height: 10vh;
+  width: 50%;
   color: darkblue;
   margin: 30px;
+  background-color: lightcoral;
 }
 .fetch-button:hover {
   cursor: pointer;
-  background-color: lightgreen;
+  background-color: lightblue;
 }
 .task-list {
   display: flex;
@@ -90,12 +120,14 @@ const taskStore = useTaskStore();
   }
   .task-name {
     width: 70%;
-    border: 3px dashed lightgreen;
+    border: 3px dashed black;
+    padding-left: 20px;
   }
   .task-button1 {
     width: 45%;
     background-color: lightblue;
     color: white;
+    margin-left: 5px;
   }
   .task-button2 {
     width: 45%;
@@ -106,5 +138,21 @@ const taskStore = useTaskStore();
 
 button:hover {
   cursor: pointer;
+}
+.complete-button{
+  background-color: white;
+  margin-right: 5px;
+}
+
+.completed-task{
+  text-decoration: line-through;
+  background-color: gray;
+  width: 70%;
+  border: 3px dashed black;
+  padding-left: 20px;
+}
+
+.router-link{
+  text-decoration: none;
 }
 </style>

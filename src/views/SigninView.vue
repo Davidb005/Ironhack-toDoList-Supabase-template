@@ -1,4 +1,5 @@
 <script setup>
+  import { RouterLink } from "vue-router";
 import { useUserStore } from "../stores/user";
 import { ref } from "vue";
 const userStore = useUserStore();
@@ -8,23 +9,26 @@ const password = ref("");
 
 <template>
   <div class="title-container">
+    <RouterLink class="router-link" to="/">
     <h1 class="title">Your ToDo List</h1>
+  </RouterLink>
   </div>
   <h2>Create your Account</h2>
-  <h3 v-if="userStore.user">Current User: {{ userStore.user.user.email }}</h3>
+  <h3 class="welcome-text" v-if="userStore.user">{{ userStore.user.user.email }}, you are already signed in!</h3>
+  <RouterLink to="/list">
+     <button class="link-button2" v-if="userStore.user">Get started</button>
+  </RouterLink> 
   <fieldset class="signin-container">
-    <input class="input" placeholder="Write your email" v-model="email" />
+    <input class="input" placeholder="Write your email" v-model="email"/>
     <input
       class="input"
       type="password"
       placeholder="Write your password"
       v-model="password"
     />
-    <RouterLink to="/list">
       <button class="button" @click="userStore.createNewUser(email, password)">
         Create new User
       </button>
-    </RouterLink>
   </fieldset>
 </template>
 
@@ -40,8 +44,14 @@ const password = ref("");
 }
 h2 {
   text-align: center;
-  font-size: 20px;
+  font-size: 30px;
   margin-bottom: 50px;
+}
+
+.welcome-text {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 50px;
 }
 
 .signin-container {
@@ -49,8 +59,11 @@ h2 {
   display: flex;
   justify-content: space-evenly;
   height: 50vh;
-  background-color: mediumturquoise;
+  background-color: rgb(244, 162, 162);
   margin-bottom: 100px;
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 20px;
   .input {
     width: 33vw;
     height: 20px;
@@ -65,5 +78,8 @@ h2 {
   .button:hover {
     cursor: pointer;
   }
+}
+.router-link{
+  text-decoration: none;
 }
 </style>

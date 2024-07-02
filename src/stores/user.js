@@ -3,18 +3,7 @@ import supabase from "@/lib/supabase";
 import { ref } from "vue";
 
 export const useUserStore = defineStore("userStore", () => {
-  const user = ref();
-
-  // const createNewUser = async (email, password) => {
-  //   const { data, error } = await supabase.auth.signUp({
-  //     email: email,
-  //     password: password,
-  //   });
-
-  //   if (error) console.log("error: ", error);
-  //   else user.value = data;
-  //   console.log("user :", user.value);
-  // };
+  const user = ref(JSON.parse(localStorage.getItem('user')));
 
   const createNewUser = async (email, password) => {
     const { user, error } = await supabase.auth.signUp({
@@ -46,8 +35,13 @@ export const useUserStore = defineStore("userStore", () => {
       password: password,
     });
     if (error) console.log("error: ", error);
-    else user.value = data;
-    console.log("user :", user.value);
+    else{
+      user.value = data;
+      console.log("user :", user.value);
+      localStorage.setItem('user', JSON.stringify(user.value));
+    }
+
+      
   };
   return { user, createNewUser, signInUser };
 });
