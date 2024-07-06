@@ -54,7 +54,7 @@ const password = ref("");
   display: flex;
   justify-content: space-evenly;
   height: 50vh;
-  background-color: rgb(244, 162, 162);
+  background-color: #E0E0E0;
   margin-bottom: 100px;
   margin-left: 5%;
   margin-right: 5%;
